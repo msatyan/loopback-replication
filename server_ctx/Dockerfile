@@ -1,4 +1,5 @@
-FROM centos
+# FROM centos
+FROM centos:7
 MAINTAINER nagaraju@us.ibm.com
 ENV INFORMIXDIR /opt/ibm/informix/
 ENV LD_LIBRARY_PATH /lib64
@@ -9,15 +10,15 @@ RUN yum -y update && yum -y install libaio sysstat libgcc libstdc compat-libstdc
 RUN /usr/sbin/groupadd -g 102 -f informix
 RUN ["/usr/sbin/useradd", "-m", "-g 102", "-u 200", "informix"]
 RUN /bin/bash -c 'echo "informix:changeme" | /usr/sbin/chpasswd'
-ADD iif.12.10.tar /opt/ibm/informix/
+ADD iif.14.10.fc3.tar /opt/ibm/informix/
 ADD bundle.properties /tmp/bundle.properties
 RUN /opt/ibm/informix/ids_install -i silent -f /tmp/bundle.properties
 RUN /bin/bash -c 'chown informix:informix /opt/ibm/data/'
 RUN /bin/bash -c '/bin/rm -rf /opt/ibm/informix/ids_install /opt/ibm/informix/IBM_Data_Server_Driver_Package /opt/ibm/informix/CSDK /opt/ibm/informix/ICONNECT /opt/ibm/informix/JDBC /opt/ibm/informix/SDK /opt/ibm/informix/SERVER'
 
 USER informix
-RUN /bin/bash -c 'cp /opt/ibm/informix//etc/onconfig.std /opt/ibm/informix//etc/onconfig'
-RUN /bin/bash -c 'cp /opt/ibm/informix//etc/sqlhosts.std /opt/ibm/informix//etc/sqlhosts'
+RUN /bin/bash -c 'cp /opt/ibm/informix/etc/onconfig.std /opt/ibm/informix/etc/onconfig'
+# RUN /bin/bash -c 'cp /opt/ibm/informix/etc/sqlhosts.std /opt/ibm/informix/etc/sqlhosts'
 ADD schema1.sql /opt/ibm/
 ADD schema2.sql /opt/ibm/
 ADD parallel_iud.ec /opt/ibm/
